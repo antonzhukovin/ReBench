@@ -28,7 +28,6 @@ from threading import Thread, RLock
 from time import time
 
 from . import subprocess_with_timeout as subprocess_timeout
-from .denoise import paths as denoise_paths
 from .interop.adapter import ExecutionDeliveredNoResults, instantiate_adapter, OutputNotParseable, \
     ResultsIndicatedAsInvalid
 from .ui import escape_braces
@@ -343,14 +342,13 @@ class Executor(object):
             cmdline += "sudo "
             if run_id.env:
                 cmdline += "--preserve-env=" + ','.join(run_id.env.keys()) + " "
-            cmdline += denoise_paths.get_denoise() + " "
+            cmdline += "rebench-denoise "
             if not self._use_nice:
                 cmdline += "--without-nice "
             if not self._use_shielding:
                 cmdline += "--without-shielding "
             if run_id.is_profiling():
                 cmdline += "--for-profiling "
-            cmdline += "--cset-path " + denoise_paths.get_cset() + " "
             cmdline += "exec -- "
 
         cmdline += gauge_adapter.acquire_command(run_id)
@@ -525,7 +523,7 @@ class Executor(object):
                     "Keep alive, current job runs for %dmin\n" % (seconds / 60), run_id, cmdline)
 
             (return_code, output, _) = subprocess_timeout.run(
-                cmdline, env=run_id.env, cwd=run_id.location, stdout=subprocess.PIPE,
+                cmdline, env=run_id.env, cwd=os.path.expanduser(run_id.location), stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, shell=True, verbose=self.debug,
                 timeout=run_id.max_invocation_time,
                 keep_alive_output=_keep_alive,
