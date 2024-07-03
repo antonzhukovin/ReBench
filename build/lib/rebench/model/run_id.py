@@ -280,8 +280,6 @@ class RunId(object):
     def cmdline_for_next_invocation(self):
         """Replace the invocation number in the command line"""
         cmdline = self.cmdline() % {'invocation': self.completed_invocations + 1}
-        print(cmdline)
-        print(os.path.expanduser(cmdline))
         return os.path.expanduser(cmdline)
         # return self.cmdline() % {'invocation': self.completed_invocations + 1}
 

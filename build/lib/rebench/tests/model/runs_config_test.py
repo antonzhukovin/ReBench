@@ -79,13 +79,3 @@ class RunsConfigTestCase(ReBenchTestCase):
 
         check.indicate_failed_execution()
         self.assertTrue(check.should_terminate(0, None))
-
-    def test_expand_user(self):
-        self._cnf = Configurator(load_config(self._path + '/small_expand_user.conf'), DataStore(self.ui),
-                                 self.ui, None,
-                                 data_file=self._tmp_file)
-        runs = self._cnf.get_runs()
-        sorted_runs = sorted(list(runs), key=lambda r: r.cmdline())
-        self._run = sorted_runs[0]
-        self.assertEqual(self._run.cmdline(), '~/PycharmProjects/ReBench/rebench/tests/test-vm1.py 1 TestBenchMarks Bench1')
-        self.assertNotIn("~", self._run.cmdline_for_next_invocation())

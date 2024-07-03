@@ -32,7 +32,7 @@ class BenchmarkSuite(object):
         command = suite.get('command')
 
         location = suite.get('location', executor.path)
-        if location and not location.startswith('~'):
+        if location:
             location = os.path.abspath(location)
         build = BuildCommand.create_commands(suite.get('build'), build_commands, location)
         benchmarks_config = suite.get('benchmarks')
